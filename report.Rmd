@@ -77,28 +77,24 @@ rb10PRS <- as.vector(read.csv("./data/rosenbrock_10dPRS.csv"))$x
 rb20GA <- as.vector(read.csv("./data/rosenbrock_20dGA.csv"))$x
 rb20PRS <- as.vector(read.csv("./data/rosenbrock_20dPRS.csv"))$x
 
+results <- read.csv("./data/results.csv")
 
 generate_plot <- function(data, function_name, algorithm_name) {
-  subset_data <- data
+  # Oblicz medianę i IQR
+  median_value <- median(data)
+  iqr_value <- IQR(data)
   
-  subset_data <- subset_data %>%
-    filter(!is.na(Value) & is.finite(Value))
-
-
-  # mean_value <- mean(subset_data$Value, na.rm = TRUE)
-  # mediana lepsza
-  median_value <- median(subset_data$Value, na.rm = TRUE)
-  iqr_value <- IQR(subset_data$Value, na.rm = TRUE)
+  # Filtruj dane: usuń elementy spoza granic mediany ± 3 * IQR
+  filtered_data <- data[data >= (median_value - 3 * iqr_value) & data <= (median_value + 3 * iqr_value)]
   
-  subset_data <- subset_data %>%
-    filter(Value >= (median_value - 3 * iqr_value) & Value <= (median_value + 3 * iqr_value))
+  # Oblicz szerokość kosza histogramu
+  bin_width <- diff(range(filtered_data)) / 30
   
-  bin_width <- diff(range(subset_data$Value)) / 30
-  
-  ggplot(subset_data, aes(x = Value)) +
+  # Tworzenie wykresu
+  ggplot(data.frame(Value = filtered_data), aes(x = Value)) +
     geom_histogram(binwidth = bin_width, fill = "blue", color = "black", alpha = 0.5) +
-    geom_vline(aes(xintercept = min(Value, na.rm = TRUE)), color = "green", size = 1) +
-    geom_vline(aes(xintercept = mean(Value, na.rm = TRUE)), color = "red", linetype = "dashed", size = 1) +
+    geom_vline(aes(xintercept = min(filtered_data)), color = "green", linewidth = 1) +
+    geom_vline(aes(xintercept = mean(filtered_data)), color = "red", linetype = "dashed", linewidth = 1) +
     labs(
       title = paste(function_name, algorithm_name),
       x = "Values",
@@ -288,7 +284,6 @@ generate_plot(ra20PRS,"rastrigin_20d","PRS")
 
 ```{r echo = FALSE}
 
-<!-- nie wiem czy to tak zadziała -->
 
 ggplot(results, aes(x = Function, y = Value, fill = Algorithm)) +
   geom_boxplot() +
