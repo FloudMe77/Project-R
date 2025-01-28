@@ -10,13 +10,13 @@ output: pdf_document
 
 Celem projektu jest przeprowadzenie statystycznego porównania działania wybranych algorytmów minimalizacji stochastycznej. Do porównania wybraliśmy:
 
-- Pure Random Search (PRS)
-- Algorytm Genetyczny (GA).
-  
+-   Pure Random Search (PRS)
+-   Algorytm Genetyczny (GA).
+
 Porównanie odbywa się na dwóch funkcjach z pakietu smoof, dla różnych liczby wymiarów (2, 10 i 20), co daje łącznie 6 przypadków testowych. Wybraliśmy ponizsze funckje:
 
-- Rosenbrock
-- Rastrigin
+-   Rosenbrock
+-   Rastrigin
 
 ## Opis algorytmów stochastycznych
 
@@ -36,14 +36,14 @@ Funkcja Rosenbrocka, znana jako "dolina Rosenbrocka", jest popularnym benchmarki
 
 $$
 f(x) = \sum_{i=1}^{n-1} \left[ 100 \cdot (x_{i+1} - x_i^2)^2 + (1 - x_i)^2 \right]
-$$
-Ze względu na swoją strukturę, jest używana do oceny wydajności algorytmów w trudnych problemach optymalizacyjnych.
+$$ Ze względu na swoją strukturę, jest używana do oceny wydajności algorytmów w trudnych problemach optymalizacyjnych.
 
-<div style="text-align: center;">
-  <img src="plots/rosenbrock.png" alt="Wizualizacja funkcji Rosenbrock dla dwóch wymiarów" width="50%">
-</div>
+::: {style="text-align: center;"}
+<img src="plots/rosenbrock.png" alt="Wizualizacja funkcji Rosenbrock dla dwóch wymiarów" width="50%"/>
+:::
 
 ### Rastrigin
+
 Funkcja Rastrigina to popularny benchmark w optymalizacji globalnej, charakteryzujący się wieloma lokalnymi minimami. Jej globalne minimum wynosi 0 i znajduje się w punkcie (0,0,…,0). Jest definiowana w $n$-wymiarach jako:
 
 $$
@@ -52,14 +52,18 @@ $$
 
 Ze względu na swoją oscylacyjną strukturę, jest wyzwaniem dla algorytmów optymalizacyjnych, które muszą unikać lokalnych minimów.
 
-<div style="text-align: center;">
-  <img src="plots/rastrigin.png" alt="Wizualizacja funkcji Rastrigin dla dwóch wymiarów" width="50%">
-</div>
+::: {style="text-align: center;"}
+<img src="plots/rastrigin.png" alt="Wizualizacja funkcji Rastrigin dla dwóch wymiarów" width="50%"/>
+:::
 
 # Wyniki pomiarów
 
+```{r echo=FALSE}
+library(smoof)
+library(ggplot2)
+library(dplyr)
+library(GA)
 
-``` {r echo=FALSE}
 ra2GA <- as.vector(read.csv("./data/rastrigin_2dGA.csv"))$x
 ra2PRS <- as.vector(read.csv("./data/rastrigin_2dPRS.csv"))$x
 ra10GA <- as.vector(read.csv("./data/rastrigin_10dGA.csv"))$x
@@ -67,14 +71,11 @@ ra10PRS <- as.vector(read.csv("./data/rastrigin_10dPRS.csv"))$x
 ra20GA <- as.vector(read.csv("./data/rastrigin_20dGA.csv"))$x
 ra20PRS <- as.vector(read.csv("./data/rastrigin_20dPRS.csv"))$x
 rb2GA <- as.vector(read.csv("./data/rosenbrock_2dGA.csv"))$x
-rb2RPS <- as.vector(read.csv("./data/rosenbrock_2dRPS.csv"))$x
+rb2PRS <- as.vector(read.csv("./data/rosenbrock_2dPRS.csv"))$x
 rb10GA <- as.vector(read.csv("./data/rosenbrock_10dGA.csv"))$x
-rb10RPS <- as.vector(read.csv("./data/rosenbrock_10dRPS.csv"))$x
+rb10PRS <- as.vector(read.csv("./data/rosenbrock_10dPRS.csv"))$x
 rb20GA <- as.vector(read.csv("./data/rosenbrock_20dGA.csv"))$x
-rb20RPS <- as.vector(read.csv("./data/rosenbrock_20dRPS.csv"))$x
-
-<!-- jakoś to tutaj może pójdzie  -->
-<!-- results <- as.data.frame(read.csv("./data/results.csv"))$x -->
+rb20PRS <- as.vector(read.csv("./data/rosenbrock_20dPRS.csv"))$x
 
 
 generate_plot <- function(data, function_name, algorithm_name) {
@@ -111,121 +112,121 @@ generate_plot <- function(data, function_name, algorithm_name) {
 
 ### GA
 
-* Średnia: `r mean(rb2GA)`
-* Wartość najmniejsza: `r min(rb2GA)`
-* Wartość największa: `r max(rb2GA)`
-* Mediana: `r median(rb2GA)`
-* Dolny kwartyl: `r quantile(rb2GA, 0.25)`
-* Górny kwartyl: `r quantile(rb2GA, 0.75)`
+-   Średnia: `r mean(rb2GA)`
+-   Wartość najmniejsza: `r min(rb2GA)`
+-   Wartość największa: `r max(rb2GA)`
+-   Mediana: `r median(rb2GA)`
+-   Dolny kwartyl: `r quantile(rb2GA, 0.25)`
+-   Górny kwartyl: `r quantile(rb2GA, 0.75)`
 
 ### PRS
 
-* Średnia: `r mean(rb2PRS)`
-* Wartość najmniejsza: `r min(rb2PRS)`
-* Wartość największa: `r max(rb2PRS)`
-* Mediana: `r median(rb2PRS)`
-* Dolny kwartyl: `r quantile(rb2PRS, 0.25)`
-* Górny kwartyl: `r quantile(rb2PRS, 0.75)`
+-   Średnia: `r mean(rb2PRS)`
+-   Wartość najmniejsza: `r min(rb2PRS)`
+-   Wartość największa: `r max(rb2PRS)`
+-   Mediana: `r median(rb2PRS)`
+-   Dolny kwartyl: `r quantile(rb2PRS, 0.25)`
+-   Górny kwartyl: `r quantile(rb2PRS, 0.75)`
 
 ## Funkcja Rosenbrock_10d
 
 ### GA
 
-* Średnia: `r mean(rb10GA)`
-* Wartość najmniejsza: `r min(rb10GA)`
-* Wartość największa: `r max(rb10GA)`
-* Mediana: `r median(rb10GA)`
-* Dolny kwartyl: `r quantile(rb10GA, 0.25)`
-* Górny kwartyl: `r quantile(rb10GA, 0.75)`
+-   Średnia: `r mean(rb10GA)`
+-   Wartość najmniejsza: `r min(rb10GA)`
+-   Wartość największa: `r max(rb10GA)`
+-   Mediana: `r median(rb10GA)`
+-   Dolny kwartyl: `r quantile(rb10GA, 0.25)`
+-   Górny kwartyl: `r quantile(rb10GA, 0.75)`
 
 ### PRS
 
-* Średnia: `r mean(rb10PRS)`
-* Wartość najmniejsza: `r min(rb10PRS)`
-* Wartość największa: `r max(rb10PRS)`
-* Mediana: `r median(rb10PRS)`
-* Dolny kwartyl: `r quantile(rb10PRS, 0.25)`
-* Górny kwartyl: `r quantile(rb10PRS, 0.75)`
+-   Średnia: `r mean(rb10PRS)`
+-   Wartość najmniejsza: `r min(rb10PRS)`
+-   Wartość największa: `r max(rb10PRS)`
+-   Mediana: `r median(rb10PRS)`
+-   Dolny kwartyl: `r quantile(rb10PRS, 0.25)`
+-   Górny kwartyl: `r quantile(rb10PRS, 0.75)`
 
 ## Funkcja Rosenbrock_20d
 
 ### GA
 
-* Średnia: `r mean(rb20GA)`
-* Wartość najmniejsza: `r min(rb20GA)`
-* Wartość największa: `r max(rb20GA)`
-* Mediana: `r median(rb20GA)`
-* Dolny kwartyl: `r quantile(rb20GA, 0.25)`
-* Górny kwartyl: `r quantile(rb20GA, 0.75)`
+-   Średnia: `r mean(rb20GA)`
+-   Wartość najmniejsza: `r min(rb20GA)`
+-   Wartość największa: `r max(rb20GA)`
+-   Mediana: `r median(rb20GA)`
+-   Dolny kwartyl: `r quantile(rb20GA, 0.25)`
+-   Górny kwartyl: `r quantile(rb20GA, 0.75)`
 
 ### PRS
 
-* Średnia: `r mean(rb20PRS)`
-* Wartość najmniejsza: `r min(rb20PRS)`
-* Wartość największa: `r max(rb20PRS)`
-* Mediana: `r median(rb20PRS)`
-* Dolny kwartyl: `r quantile(rb20PRS, 0.25)`
-* Górny kwartyl: `r quantile(rb20PRS, 0.75)`
+-   Średnia: `r mean(rb20PRS)`
+-   Wartość najmniejsza: `r min(rb20PRS)`
+-   Wartość największa: `r max(rb20PRS)`
+-   Mediana: `r median(rb20PRS)`
+-   Dolny kwartyl: `r quantile(rb20PRS, 0.25)`
+-   Górny kwartyl: `r quantile(rb20PRS, 0.75)`
 
 ## Funkcja Rastrigin_2d
 
 ### GA
 
-* Średnia: `r mean(ra2GA)`
-* Wartość najmniejsza: `r min(ra2GA)`
-* Wartość największa: `r max(ra2GA)`
-* Mediana: `r median(ra2GA)`
-* Dolny kwartyl: `r quantile(ra2GA, 0.25)`
-* Górny kwartyl: `r quantile(ra2GA, 0.75)`
+-   Średnia: `r mean(ra2GA)`
+-   Wartość najmniejsza: `r min(ra2GA)`
+-   Wartość największa: `r max(ra2GA)`
+-   Mediana: `r median(ra2GA)`
+-   Dolny kwartyl: `r quantile(ra2GA, 0.25)`
+-   Górny kwartyl: `r quantile(ra2GA, 0.75)`
 
 ### PRS
 
-* Średnia: `r mean(ra2PRS)`
-* Wartość najmniejsza: `r min(ra2PRS)`
-* Wartość największa: `r max(ra2PRS)`
-* Mediana: `r median(ra2PRS)`
-* Dolny kwartyl: `r quantile(ra2PRS, 0.25)`
-* Górny kwartyl: `r quantile(ra2PRS, 0.75)`
+-   Średnia: `r mean(ra2PRS)`
+-   Wartość najmniejsza: `r min(ra2PRS)`
+-   Wartość największa: `r max(ra2PRS)`
+-   Mediana: `r median(ra2PRS)`
+-   Dolny kwartyl: `r quantile(ra2PRS, 0.25)`
+-   Górny kwartyl: `r quantile(ra2PRS, 0.75)`
 
 ## Funkcja Rastrigin_10d
 
 ### GA
 
-* Średnia: `r mean(ra10GA)`
-* Wartość najmniejsza: `r min(ra10GA)`
-* Wartość największa: `r max(ra10GA)`
-* Mediana: `r median(ra10GA)`
-* Dolny kwartyl: `r quantile(ra10GA, 0.25)`
-* Górny kwartyl: `r quantile(ra10GA, 0.75)`
+-   Średnia: `r mean(ra10GA)`
+-   Wartość najmniejsza: `r min(ra10GA)`
+-   Wartość największa: `r max(ra10GA)`
+-   Mediana: `r median(ra10GA)`
+-   Dolny kwartyl: `r quantile(ra10GA, 0.25)`
+-   Górny kwartyl: `r quantile(ra10GA, 0.75)`
 
 ### PRS
 
-* Średnia: `r mean(ra10PRS)`
-* Wartość najmniejsza: `r min(ra10PRS)`
-* Wartość największa: `r max(ra10PRS)`
-* Mediana: `r median(ra10PRS)`
-* Dolny kwartyl: `r quantile(ra10PRS, 0.25)`
-* Górny kwartyl: `r quantile(ra10PRS, 0.75)`
+-   Średnia: `r mean(ra10PRS)`
+-   Wartość najmniejsza: `r min(ra10PRS)`
+-   Wartość największa: `r max(ra10PRS)`
+-   Mediana: `r median(ra10PRS)`
+-   Dolny kwartyl: `r quantile(ra10PRS, 0.25)`
+-   Górny kwartyl: `r quantile(ra10PRS, 0.75)`
 
 ## Funkcja Rastrigin_20d
 
 ### GA
 
-* Średnia: `r mean(ra20GA)`
-* Wartość najmniejsza: `r min(ra20GA)`
-* Wartość największa: `r max(ra20GA)`
-* Mediana: `r median(ra20GA)`
-* Dolny kwartyl: `r quantile(ra20GA, 0.25)`
-* Górny kwartyl: `r quantile(ra20GA, 0.75)`
+-   Średnia: `r mean(ra20GA)`
+-   Wartość najmniejsza: `r min(ra20GA)`
+-   Wartość największa: `r max(ra20GA)`
+-   Mediana: `r median(ra20GA)`
+-   Dolny kwartyl: `r quantile(ra20GA, 0.25)`
+-   Górny kwartyl: `r quantile(ra20GA, 0.75)`
 
 ### PRS
 
-* Średnia: `r mean(ra20PRS)`
-* Wartość najmniejsza: `r min(ra20PRS)`
-* Wartość największa: `r max(ra20PRS)`
-* Mediana: `r median(ra20PRS)`
-* Dolny kwartyl: `r quantile(ra20PRS, 0.25)`
-* Górny kwartyl: `r quantile(ra20PRS, 0.75)`
+-   Średnia: `r mean(ra20PRS)`
+-   Wartość najmniejsza: `r min(ra20PRS)`
+-   Wartość największa: `r max(ra20PRS)`
+-   Mediana: `r median(ra20PRS)`
+-   Dolny kwartyl: `r quantile(ra20PRS, 0.25)`
+-   Górny kwartyl: `r quantile(ra20PRS, 0.75)`
 
 # Wykresy
 
@@ -238,7 +239,7 @@ generate_plot(rb2GA,"rosenbrock_2d","GA")
 ```
 
 ```{r echo=FALSE}
-generate_plot(rb2PRS,"rosenbrock_2d","RPS")
+generate_plot(rb2PRS,"rosenbrock_2d","PRS")
 ```
 
 ```{r echo=FALSE}
@@ -246,7 +247,7 @@ generate_plot(rb10GA,"rosenbrock_10d","GA")
 ```
 
 ```{r echo=FALSE}
-generate_plot(rb10PRS,"rosenbrock_10d","RPS")
+generate_plot(rb10PRS,"rosenbrock_10d","PRS")
 ```
 
 ```{r echo=FALSE}
@@ -254,7 +255,7 @@ generate_plot(rb20GA,"rosenbrock_20d","GA")
 ```
 
 ```{r echo=FALSE}
-generate_plot(rb20PRS,"rosenbrock_20d","RPS")
+generate_plot(rb20PRS,"rosenbrock_20d","PRS")
 ```
 
 ### Funkcja Rastrigin
@@ -264,7 +265,7 @@ generate_plot(ra2GA,"rastrigin_2d","GA")
 ```
 
 ```{r echo=FALSE}
-generate_plot(ra2PRS,"rastrigin_2d","RPS")
+generate_plot(ra2PRS,"rastrigin_2d","PRS")
 ```
 
 ```{r echo=FALSE}
@@ -272,7 +273,7 @@ generate_plot(ra10GA,"rastrigin_10d","GA")
 ```
 
 ```{r echo=FALSE}
-generate_plot(ra10PRS,"rastrigin_10d","RPS")
+generate_plot(ra10PRS,"rastrigin_10d","PRS")
 ```
 
 ```{r echo=FALSE}
@@ -280,10 +281,10 @@ generate_plot(ra20GA,"rastrigin_20d","GA")
 ```
 
 ```{r echo=FALSE}
-generate_plot(ra20PRS,"rastrigin_20d","RPS")
+generate_plot(ra20PRS,"rastrigin_20d","PRS")
 ```
 
-## Wykresy pudełkowe 
+## Wykresy pudełkowe
 
 ```{r echo = FALSE}
 
