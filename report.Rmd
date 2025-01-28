@@ -58,7 +58,7 @@ Ze względu na swoją oscylacyjną strukturę, jest wyzwaniem dla algorytmów op
 
 # Wyniki pomiarów
 
-```{r echo=FALSE}
+```{r include=FALSE}
 library(smoof)
 library(ggplot2)
 library(dplyr)
@@ -85,7 +85,7 @@ generate_plot <- function(data, function_name, algorithm_name) {
   iqr_value <- IQR(data)
   
   # Filtruj dane: usuń elementy spoza granic mediany ± 3 * IQR
-  filtered_data <- data[data >= (median_value - 3 * iqr_value) & data <= (median_value + 3 * iqr_value)]
+  filtered_data <- data[data >= (median_value - 1.5 * iqr_value) & data <= (median_value + 1.5 * iqr_value)]
   
   # Oblicz szerokość kosza histogramu
   bin_width <- diff(range(filtered_data)) / 30
