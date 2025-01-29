@@ -13,7 +13,7 @@ Celem projektu jest przeprowadzenie statystycznego porównania działania wybran
 -   Pure Random Search (PRS)
 -   Algorytm Genetyczny (GA).
 
-Porównanie odbywa się na dwóch funkcjach z pakietu smoof, dla różnych liczby wymiarów (2, 10 i 20), co daje łącznie 6 przypadków testowych. Wybraliśmy ponizsze funckje:
+Porównanie odbywa się na dwóch funkcjach z pakietu smoof, dla różnych liczby wymiarów (2, 10 i 20), co daje łącznie 6 przypadków testowych. Wybraliśmy poniższe funkcje:
 
 -   Rosenbrock
 -   Rastrigin
@@ -34,31 +34,34 @@ Algorytm Genetyczny (GA) to metaheurystyczny algorytm minimalizacji, inspirowany
 
 Funkcja Rosenbrocka, znana jako "dolina Rosenbrocka", jest popularnym benchmarkiem w optymalizacji. Jej globalne minimum wynosi 0 i znajduje się w punkcie (1,1,...,1). Funkcja charakteryzuje się wąską, zakrzywioną doliną, co utrudnia szybkie znalezienie globalnego minimum. Definicja funkcji w $n$-wymiarach to:
 
+::: {.center}
+![Funkcja Rastrigina](plots/rosenbrock.png){width=60%}
+:::
+
 $$
 f(x) = \sum_{i=1}^{n-1} \left[ 100 \cdot (x_{i+1} - x_i^2)^2 + (1 - x_i)^2 \right]
 $$ Ze względu na swoją strukturę, jest używana do oceny wydajności algorytmów w trudnych problemach optymalizacyjnych.
 
-::: {style="text-align: center;"}
-<img src="plots/rosenbrock.png" alt="Wizualizacja funkcji Rosenbrock dla dwóch wymiarów" width="50%"/>
-:::
+
 
 ### Rastrigin
 
 Funkcja Rastrigina to popularny benchmark w optymalizacji globalnej, charakteryzujący się wieloma lokalnymi minimami. Jej globalne minimum wynosi 0 i znajduje się w punkcie (0,0,…,0). Jest definiowana w $n$-wymiarach jako:
 
+::: {.center}
+![Funkcja Rastrigina](plots/rastrigin.png){width=60%}
+:::
+
 $$
-f(x) = 10n + \sum_{i=1}^n \left( x_i^2 - 10 \cos(2\pi x_i) \right)
+f(x) = 10n + \sum_{i=1}^n \left[x_i^2 - 10\cos(2\pi x_i)\right]
 $$
 
 Ze względu na swoją oscylacyjną strukturę, jest wyzwaniem dla algorytmów optymalizacyjnych, które muszą unikać lokalnych minimów.
 
-::: {style="text-align: center;"}
-<img src="plots/rastrigin.png" alt="Wizualizacja funkcji Rastrigin dla dwóch wymiarów" width="50%"/>
-:::
-
+\pagebreak
 # Wyniki pomiarów
 
-```{r include=FALSE}
+```{r include=FALSE, warning=FALSE, message=FALSE}
 library(smoof)
 library(ggplot2)
 library(dplyr)
@@ -80,27 +83,34 @@ rb20PRS <- as.vector(read.csv("./data/rosenbrock_20dPRS.csv"))$x
 results <- read.csv("./data/results.csv")
 
 generate_plot <- function(data, function_name, algorithm_name) {
-  # Oblicz medianę i IQR
   median_value <- median(data)
   iqr_value <- IQR(data)
+  lower_quantile <- quantile(data, 0.25)
+  upper_quantile <- quantile(data, 0.75)  
+
+  filtered_data <- data[data >= (lower_quantile - 1.5 * iqr_value) & data <= (upper_quantile + 1.5 * iqr_value)]
   
-  # Filtruj dane: usuń elementy spoza granic mediany ± 3 * IQR
-  filtered_data <- data[data >= (median_value - 1.5 * iqr_value) & data <= (median_value + 1.5 * iqr_value)]
-  
-  # Oblicz szerokość kosza histogramu
   bin_width <- diff(range(filtered_data)) / 30
   
-  # Tworzenie wykresu
   ggplot(data.frame(Value = filtered_data), aes(x = Value)) +
-    geom_histogram(binwidth = bin_width, fill = "blue", color = "black", alpha = 0.5) +
-    geom_vline(aes(xintercept = min(filtered_data)), color = "green", linewidth = 1) +
-    geom_vline(aes(xintercept = mean(filtered_data)), color = "red", linetype = "dashed", linewidth = 1) +
-    labs(
-      title = paste(function_name, algorithm_name),
-      x = "Values",
-      y = "Count"
-    ) +
-    theme_minimal()
+  geom_histogram(binwidth = bin_width, fill = "blue", color = "black", alpha = 0.5) +
+  
+  geom_vline(aes(xintercept = min(filtered_data), color = "Minimum"), linewidth = 1) +
+  geom_vline(aes(xintercept = mean(filtered_data), color = "Mean"), linetype = "dashed") +
+  
+  labs(
+    title = paste(function_name, algorithm_name),
+    x = "Values",
+    y = "Count",
+    color = "Legend"
+  ) +
+  
+  scale_color_manual(values = c("Minimum" = "green", "Mean" = "red")) +
+
+  scale_x_continuous(limits = c(0, max(filtered_data))) +
+  
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
 }
 ```
 
@@ -224,63 +234,62 @@ generate_plot <- function(data, function_name, algorithm_name) {
 -   Dolny kwartyl: `r quantile(ra20PRS, 0.25)`
 -   Górny kwartyl: `r quantile(ra20PRS, 0.75)`
 
-# Wykresy
+\pagebreak
+# Histogramy obrazujące rozkład znalezionych minimów funkcji
 
-## Histogramy
+### Funkcja Rosenbrocka
 
-### Funkcja Rosenbrock
-
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(rb2GA,"rosenbrock_2d","GA")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(rb2PRS,"rosenbrock_2d","PRS")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(rb10GA,"rosenbrock_10d","GA")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(rb10PRS,"rosenbrock_10d","PRS")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(rb20GA,"rosenbrock_20d","GA")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(rb20PRS,"rosenbrock_20d","PRS")
 ```
 
-### Funkcja Rastrigin
+### Funkcja Rastrigina
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(ra2GA,"rastrigin_2d","GA")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(ra2PRS,"rastrigin_2d","PRS")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(ra10GA,"rastrigin_10d","GA")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(ra10PRS,"rastrigin_10d","PRS")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(ra20GA,"rastrigin_20d","GA")
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, out.height="45%", warning=FALSE, message=FALSE}
 generate_plot(ra20PRS,"rastrigin_20d","PRS")
 ```
 
-## Wykresy pudełkowe
+# Wykresy pudełkowe
 
 ```{r echo = FALSE}
 
@@ -288,52 +297,81 @@ generate_plot(ra20PRS,"rastrigin_20d","PRS")
 ggplot(results, aes(x = Function, y = Value, fill = Algorithm)) +
   geom_boxplot() +
   facet_wrap(~Function, scales = "free") +
-  labs(title = "Comparison of PRS and GA on Rosenbrock and Rastrigin Functions",
-       y = "Minimum Function Value",
-       x = "Function and Dimension") +
+  labs(title = "Porównanie algorytmów PRS i GA dla funkcji Rosenbrocka i Rastrigina",
+       y = "Znalezione minima funkcji",
+       x = "Funkcja i wymiar") +
   theme_minimal()
 ```
 
-## Porównanie czasowe
 
-opcjonalne
+# Analiza statystyczna
 
-## Testy statystczne
+## Test t-Studenta dla prób zależnych
 
-Hipotezą zerową dla każdego testu była równość średnich dla obu algorytmów stochastycznych
+### Założenia teoretyczne
+1. **Hipoteza zerowa ($H_0$):**  
+   $$
+   \mu_{\text{PRS}} = \mu_{\text{GA}} 
+   $$  
+   Brak istotnej różnicy między średnimi wynikami
 
-#### Funkcja Rosenbrock_2d
+2. **Hipoteza alternatywna ($H_1$):**  
+   $$ 
+   \mu_{\text{PRS}} \neq \mu_{\text{GA}} 
+   $$  
+   Istnieje istotna różnica między średnimi
 
-```{r echo=FALSE}
-t.test(x = rb2PRS, y = rb2GA, paired = TRUE)
+3. **Poziom istotności:**  
+   $$
+   \alpha = 0.05 
+   $$
+
+\pagebreak
+### Wyniki testów
+
+```{r, echo=TRUE}
+  perform_test <- function(prs, ga) {
+  test <- t.test(prs, ga, paired = TRUE)
+  data.frame(
+    Różnica = round(test$estimate, 2),
+    CI_95 = paste0("[", round(test$conf.int[1], 1), ", ", round(test$conf.int[2], 1), "]"),
+    p_value = ifelse(test$p.value < 0.00001, "< 0.00001", round(test$p.value, 6))
+  )
+}
+
+results_table <- data.frame(
+  Funkcja = c("Rosenbrock_2d", "Rosenbrock_10d", "Rosenbrock_20d",
+              "Rastrigin_2d", "Rastrigin_10d", "Rastrigin_20d"),
+  bind_rows(
+    perform_test(rb2PRS, rb2GA),
+    perform_test(rb10PRS, rb10GA),
+    perform_test(rb20PRS, rb20GA),
+    perform_test(ra2PRS, ra2GA),
+    perform_test(ra10PRS, ra10GA),
+    perform_test(ra20PRS, ra20GA)
+  )
+)
+
+knitr::kable(
+  results_table,
+  col.names = c("Funkcja", "Różnica średnich", "95% CI", "p-value"),
+  caption = "Podsumowanie wyników testów statystycznych",
+  row.names = FALSE
+)
 ```
 
-#### Funkcja Rosenbrock_10d
 
-```{r echo=FALSE}
-t.test(x = rb10PRS, y = rb10GA, paired = TRUE)
-```
+### Interpretacja
+1. **Wszystkie p-value < 0.00001** - Silne dowody przeciw $H_0$
+2. **Różnice średnich dodatnie** - GA konsekwentnie lepszy
+3. **Przedziały ufności** nie zawierają zera - Wyniki istotne praktycznie
 
-#### Funkcja Rosenbrock_20d
+\pagebreak
+# Wnioski
 
-```{r echo=FALSE}
-t.test(x = rb20PRS, y = rb20GA, paired = TRUE)
-```
-
-#### Funkcja Rastrigin_2d
-
-```{r echo=FALSE}
-t.test(x = ra2PRS, y = ra2GA, paired = TRUE)
-```
-
-#### Funkcja Rastrigin_10d
-
-```{r echo=FALSE}
-t.test(x = ra10PRS, y = ra10GA, paired = TRUE)
-```
-
-#### Funkcja Rastrigin_20d
-
-```{r echo=FALSE}
-t.test(x = ra20PRS, y = ra20GA, paired = TRUE)
-```
+1. **Przewaga GA** jest statystycznie istotna (p < 0.00001) we wszystkich testowanych przypadkach
+2. **Wraz ze wzrostem wymiarowości** różnice między algorytmami rosną:
+   - Rosenbrock 20D: GA lepszy średnio o `r round(mean(rb20PRS - rb20GA), 0)` jednostek
+   - Rastrigin 20D: GA lepszy średnio o `r round(mean(ra20PRS - ra20GA), 0)` jednostek
+3. **PRS** wykazuje większą wariancję wyników (szersze rozkłady)
+4. Wyniki potwierdzają **skuteczność algorytmów ewolucyjnych** w problemach wysokowymiarowych
