@@ -26,7 +26,7 @@ Pure Random Search (PRS) to prosty algorytm minimalizacji stochastycznej, w któ
 
 ### Algorytm Genetyczny (GA)
 
-Algorytm Genetyczny (GA) to metaheurystyczny algorytm minimalizacji, inspirowany procesami ewolucji biologicznej, takimi jak selekcja naturalna, rekombinacja (krzyżowanie) i mutacja. Proces rozpoczyna się od wygenerowania początkowej populacji osobników (punktów w przestrzeni poszukiwań). Każdy osobnik reprezentuje potencjalne rozwiązanie, którego jakość oceniana jest za pomocą funkcji celu. W kolejnych iteracjach algorytmu populacja ewoluuje poprzez wybór osobników o najlepszej wartości funkcji celu, ich rekombinację w celu generowania nowego potomstwa oraz wprowadzenie mutacji, aby zwiększyć różnorodność rozwiązań. Proces ewolucji trwa do wyczerpania budżetu, określonego przez liczbę wywołań funkcji celu. Algorytmy genetyczne są szczególnie efektywne w problemach złożonych i nieliniowych, ponieważ potrafią eksplorować przestrzeń rozwiązań w sposób globalny, unikając lokalnych minimów. W projekcie GA został zaimplementowany przy użyciu pakietu GA, z powodu utrudnionego dostępu do wyznaczone biblioteki ECR na systemie Linux. (PO PROSTU NIE DZIAŁA)
+Algorytm Genetyczny (GA) to metaheurystyczny algorytm minimalizacji, inspirowany procesami ewolucji biologicznej, takimi jak selekcja naturalna, rekombinacja (krzyżowanie) i mutacja. Proces rozpoczyna się od wygenerowania początkowej populacji osobników (punktów w przestrzeni poszukiwań). Każdy osobnik reprezentuje potencjalne rozwiązanie, którego jakość oceniana jest za pomocą funkcji celu. W kolejnych iteracjach algorytmu populacja ewoluuje poprzez wybór osobników o najlepszej wartości funkcji celu, ich rekombinację w celu generowania nowego potomstwa oraz wprowadzenie mutacji, aby zwiększyć różnorodność rozwiązań. Proces ewolucji trwa do wyczerpania budżetu, określonego przez liczbę wywołań funkcji celu. Algorytmy genetyczne są szczególnie efektywne w problemach złożonych i nieliniowych, ponieważ potrafią eksplorować przestrzeń rozwiązań w sposób globalny, unikając lokalnych minimów. W projekcie GA został zaimplementowany przy użyciu pakietu GA, z powodu utrudnionego dostępu do wyznaczone biblioteki ECR na systemie Linux.
 
 ## Opis funkcji testowych
 
@@ -35,15 +35,14 @@ Algorytm Genetyczny (GA) to metaheurystyczny algorytm minimalizacji, inspirowany
 Funkcja Rosenbrocka, znana jako "dolina Rosenbrocka", jest popularnym benchmarkiem w optymalizacji. Jej globalne minimum wynosi 0 i znajduje się w punkcie (1,1,...,1). Funkcja charakteryzuje się wąską, zakrzywioną doliną, co utrudnia szybkie znalezienie globalnego minimum. Definicja funkcji w $n$-wymiarach to:
 
 ::: {.center}
-![Funkcja Rastrigina](plots/rosenbrock.png){width=60%}
+![Funkcja Rosenbrocka](plots/rosenbrock.png){width=60%}
 :::
 
 $$
 f(x) = \sum_{i=1}^{n-1} \left[ 100 \cdot (x_{i+1} - x_i^2)^2 + (1 - x_i)^2 \right]
 $$ Ze względu na swoją strukturę, jest używana do oceny wydajności algorytmów w trudnych problemach optymalizacyjnych.
 
-
-
+\pagebreak
 ### Rastrigin
 
 Funkcja Rastrigina to popularny benchmark w optymalizacji globalnej, charakteryzujący się wieloma lokalnymi minimami. Jej globalne minimum wynosi 0 i znajduje się w punkcie (0,0,…,0). Jest definiowana w $n$-wymiarach jako:
@@ -58,7 +57,7 @@ $$
 
 Ze względu na swoją oscylacyjną strukturę, jest wyzwaniem dla algorytmów optymalizacyjnych, które muszą unikać lokalnych minimów.
 
-\pagebreak
+<!-- \pagebreak -->
 # Wyniki pomiarów
 
 ```{r include=FALSE, warning=FALSE, message=FALSE}
